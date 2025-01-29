@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+    <!-- Hero Section -->
+    <section class="bg-green-600 text-white text-center py-20 sm:py-24 lg:py-32">
+        <h2 class="text-4xl font-semibold mb-4">Manage Attendance</h2>
+        <p class="text-lg mb-6 max-w-3xl mx-auto px-4">Track and update student attendance with ease.</p>
+    </section>
+
+    <!-- Attendance Options -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-3xl font-semibold text-center text-green-800 mb-12">Attendance Options</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <!-- Check Attendance -->
+                <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl hover-scale transition-transform">
+                    <h4 class="text-2xl font-semibold text-green-800 mb-4">Check Attendance</h4>
+                    <p class="text-gray-600 mb-6">Select a date to view the attendance for all students.</p>
+                    <a href="{{ url_for('check_attendance') }}" class="bg-green-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-green-700 transition">View Attendance</a>
+                </div>
+
+                <!-- Add Attendance -->
+                <div class="bg-white p-8 rounded-lg shadow-lg hover:shadow-xl hover-scale transition-transform">
+                    <h4 class="text-2xl font-semibold text-green-800 mb-4">Add Attendance</h4>
+                    <p class="text-gray-600 mb-6">Mark attendance for today by selecting students and their status.</p>
+                    <a href="{{ url_for('add_attendance') }}" class="bg-green-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-green-700 transition">Add Attendance</a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{%extends "layout.html" %}
+
+{% block body %} 
+
+    <!-- Select Date Section -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-3xl font-semibold text-center text-green-800 mb-8">Select a Date to Check Attendance</h3>
+            <form method="POST" action="{{ url_for('check_attendance') }}">
+                <label for="date" class="text-lg font-medium text-green-800">Select Date:</label>
+                <input type="date" name="date" id="date" class="mt-2 p-3 rounded-md border border-gray-300 w-full sm:w-1/2" required>
+                <button type="submit" class="bg-green-600 text-white font-semibold py-2 px-6 mt-6 rounded-lg hover:bg-green-700 transition">Check Attendance</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Attendance Table -->
+    {% if students %}
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-3xl font-semibold text-center text-green-800 mb-8">Attendance for {{ selected_date }}</h3>
+            <table class="min-w-full bg-white shadow-lg rounded-lg">
+                <thead>
+                    <tr class="bg-green-600 text-white">
+                        <th class="py-3 px-6">Student Name</th>
+                        <th class="py-3 px-6">Attendance Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="hover-row">
+                        <td class="py-3 px-6">{{ student.name }}</td>
+                        <td class="py-3 px-6">{{ student.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% else %}
+<!-- No attendance records found message -->
+<section class="py-16">
+    <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-semibold text-center text-gray-600 mb-8">No attendance records found for {{ selected_date }}.</h3>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Select a Student</h2>    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for student in students %}
+        <form action="{{ url_for('student_profile', student_id=student[0]) }}" method="POST">
+            <div class="bg-green-200 p-6 rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer" onclick="this.closest('form').submit()">
+                <div class="flex flex-col items-center text-center">
+                    <img src="student1.jpg" alt="Student 1" class="w-24 h-24 rounded-full mb-4">
+                    <h3 class="text-xl font-semibold text-green-800">{{ student[1] }}</h3>
+                </div>
+            </div>
+        </form>
+        {% endfor %}
+        {% if current_user.role == 'admin' %}
+
+
+        
+         <form action="/add_student" method="GET">
+            <div class="bg-green-300 p-6 rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer" onclick="this.closest('form').submit()">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 rounded-full bg-green-400 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-green-800">Add Student</h3>
+                </div>
+            </div>
+        </form>
+       
+        {% endif %}
+
+    </div> 
+</div>
+
+{% endblock %}

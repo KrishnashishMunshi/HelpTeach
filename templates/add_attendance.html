@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<section class="py-16">
+    <div class="max-w-7xl mx-auto px-4">
+        <h3 class="text-3xl font-semibold text-center text-green-800 mb-8">Add Attendance</h3>
+
+        <!-- Form for Adding Attendance -->
+        <form method="POST" action="{{ url_for('add_attendance') }}">
+            <!-- Select Date -->
+            <label for="date" class="text-lg font-medium text-green-800">Select Date:</label>
+            <input type="date" name="date" id="date" class="mt-2 p-3 rounded-md border border-gray-300 w-full sm:w-1/2 mb-8" max = "{{ current_date }}" required>
+
+            <!-- Student Attendance List -->
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-green-600 text-white">
+                            <th class="py-3 px-6 text-left">Student Name</th>
+                            <th class="py-3 px-6 text-center">Mark Attendance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr class="hover-row">
+                            <td class="py-3 px-6 text-left">{{ student['name'] }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <div class="flex justify-center space-x-4">
+                                    <label>
+                                        <input type="radio" name="{{ student['id'] }}" value="Present" required>
+                                        Present
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="{{ student['id'] }}" value="Absent" required>
+                                        Absent
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center mt-8">
+                <button type="submit" class="bg-green-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-green-700 transition">
+                    Submit Attendance
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

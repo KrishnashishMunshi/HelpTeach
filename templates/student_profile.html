@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+
+{%block body%}
+<div class="container mx-auto p-6">
+    <h2 class="text-3xl font-semibold mb-6 text-center text-green-800">Student Profile: {{ student[1] }}</h2>
+
+    <!-- Navigation Tabs -->
+    <div class="flex justify-center space-x-4 mb-6">
+        <button onclick="showSection('profile')" class="tab-button bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+            Profile
+        </button>
+        <button onclick="showSection('progress')" class="tab-button bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+            Progress
+        </button>
+        <button onclick="showSection('attendance')" class="tab-button bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+            Attendance
+        </button>        
+    </div>
+    <div class="mt-6 relative">
+        {% if current_user.role == "admin" %}
+        <form action="{{ url_for('delete_student', student_id=student[0]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this student and all their related records?');">
+            <button type="submit" class="tab-button bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition absolute bottom-4 right-4">
+                Delete Student
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    
+
+
+    <!-- Profile Section -->
+    <div id="profile" class="tab-content">
+        <div class="bg-green-100 p-6 rounded-lg shadow-lg">
+            <p class="text-green-600"><span class="font-medium">Gender:</span> {{ student[2] }}</p>
+            <p class="text-green-600"><span class="font-medium">Date of Birth:</span> {{ student[3] }}</p>
+            <p class="text-green-600"><span class="font-medium">Guardian Contact:</span> {{ student[4] }}</p>
+        </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div id="progress" class="tab-content hidden">
+        <div class="bg-green-100 p-6 rounded-lg shadow-lg">
+            <h4 class="text-xl font-semibold mb-4 text-green-700">Progress</h4>
+
+            <!-- View Progress -->
+            <div id="view-progress">
+                <ul class="list-disc pl-6 space-y-2 text-green-600">
+                    <li><span class="font-medium">Hindi:</span> {{ progress[0] }}</li>
+                    <li><span class="font-medium">English:</span> {{ progress[1] }}</li>
+                    <li><span class="font-medium">Math:</span> {{ progress[2] }}</li>
+                    <li><span class="font-medium">Other:</span> {{ progress[3] }}</li>
+                </ul>
+                {% if current_user.role == 'admin' %}
+
+                    <button onclick="enableEditMode()" class="bg-blue-500 text-white font-semibold py-2 px-6 mt-6 rounded-lg hover:bg-blue-600 transition">
+                        Edit Progress
+                    </button>
+                {% endif %}
+            </div>
+
+            <!-- Edit Progress -->
+            <div id="edit-progress" class="hidden">
+                <form method="POST" action="{{ url_for('update_progress', student_id=student[0]) }}">
+                    <div class="mb-4">
+                        <label for="hindi" class="block text-green-800 font-medium">Hindi:</label>
+                        <textarea id="hindi" name="hindi" class="p-2 w-full border border-gray-300 rounded-lg" rows="3">{{ progress[0] }}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="english" class="block text-green-800 font-medium">English:</label>
+                        <textarea id="english" name="english" class="p-2 w-full border border-gray-300 rounded-lg" rows="3">{{ progress[1] }}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="math" class="block text-green-800 font-medium">Math:</label>
+                        <textarea id="math" name="math" class="p-2 w-full border border-gray-300 rounded-lg" rows="3">{{ progress[2] }}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="other" class="block text-green-800 font-medium">Other:</label>
+                        <textarea id="other" name="other" class="p-2 w-full border border-gray-300 rounded-lg" rows="3">{{ progress[3] }}</textarea>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button type="submit" class="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition">
+                            Save Progress
+                        </button>
+                        <button type="button" onclick="cancelEditMode()" class="bg-red-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-600 transition">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Section -->
+    <div id="attendance" class="tab-content hidden">
+        <div class="bg-green-100 p-6 rounded-lg shadow-lg">
+            {% if attendance %}
+            <table class="table-auto w-full border-collapse border border-green-500">
+                <thead>
+                    <tr class="bg-green-200">
+                        <th class="border border-green-500 px-4 py-2 text-green-800">Date</th>
+                        <th class="border border-green-500 px-4 py-2 text-green-800">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance %}
+                    <tr class="{{ loop.cycle('bg-green-50', '') }}">
+                        <td class="border border-green-500 px-4 py-2 text-green-700">{{ record.date }}</td>
+                        <td class="border border-green-500 px-4 py-2 text-green-700">{{ record.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            {% else %}
+                <p>No attendance records found</p>
+            {% endif %}
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to toggle between tabs
+    function showSection(sectionId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.add('hidden');
+        });
+
+        // Show the selected tab
+        document.getElementById(sectionId).classList.remove('hidden');
+    }
+
+    // Set default section to be visible (e.g., Profile)
+    document.addEventListener('DOMContentLoaded', () => {
+        showSection('profile');
+    });
+
+     // Enable Edit Mode
+     function enableEditMode() {
+        document.getElementById('view-progress').classList.add('hidden');
+        document.getElementById('edit-progress').classList.remove('hidden');
+    }
+
+    // Cancel Edit Mode
+    function cancelEditMode() {
+        document.getElementById('edit-progress').classList.add('hidden');
+        document.getElementById('view-progress').classList.remove('hidden');
+    }
+</script>
+
+{% endblock %}

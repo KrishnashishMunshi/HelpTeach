@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>  <!-- Dynamic title -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Hover effect for table rows */
+        .hover-row:hover {
+            background-color: #f7fafc;
+        }
+        .glow-effect {
+            text-shadow:0 0 2px rgba(255, 255, 255, 0.7), 0 0 4px rgba(163, 230, 53, 0.7), 0 0 5px rgba(163, 230, 53, 0.7);
+            /*text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 15px #a3e635, 0 0 20px #a3e635, 0 0 25px #a3e635, 0 0 30px #a3e635, 0 0 40px #a3e635;*/
+        }
+    </style>
+</head>
+<body class = "min-h-screen flex flex-col">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/forms@0.4.0/dist/index.min.js"></script>
+    <!-- Navbar -->
+    <nav class="bg-green-600 p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo/Title -->
+            <div class="flex items-center space-x-3">
+                  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="h-12 w-12 shadow-lg rounded-full transition-transform hover:scale-110">
+                <h1 class="text-2xl font-bold text-white glow-effect">Teacher Dashboard</h1>
+            </div>
+            
+            <!-- Toggle Button for Mobile Menu -->
+            <div class="lg:hidden">
+                <button id="menu-toggle" class="text-white">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+    
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex space-x-4">
+                <!-- Conditional rendering for Login/Logout -->
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('home') }}" class="text-white hover:text-green-200 glow-effect transition">Home</a>
+            <a href="{{ url_for('students') }}" class="text-white hover:text-green-200 glow-effect transition">Students</a>
+            <a href="{{ url_for('attendance') }}" class="text-white hover:text-green-200 glow-effect transition">Attendance</a>
+            <a href="{{ url_for('timeline') }}" class="text-white hover:text-green-200 glow-effect transition">Timeline</a>
+            {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('manage_users') }}" class="text-white hover:text-green-200 glow-effect transition">Users</a>
+            {% endif %}
+                <a href="{{ url_for('logout') }}" class="text-white hover:text-green-200 glow-effect transition">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="text-white hover:text-green-200 glow-effect transition">Login</a>
+            {% endif %}
+            </div>
+        </div>
+        
+        <!-- Mobile Menu (Hidden by default, shown when the toggle button is clicked) -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-green-600 mt-4">
+            
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('home') }}" class="block text-white py-2 px-4 hover:bg-green-700 glow-effect">Home</a>
+            <a href="{{ url_for('students') }}" class="block text-white py-2 px-4 hover:bg-green-700 glow-effect">Students</a>
+            <a href="{{ url_for('attendance') }}" class="block text-white py-2 px-4 hover:bg-green-700 glow-effect">Attendance</a>
+            <a href="{{ url_for('timeline') }}" class="block text-white py-2 px-4 hover:bg-green-700 glow-effect">Timeline</a>
+            {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('manage_users') }}" class="block text-white py-2 px-4 hover:bg-green-700 glow-effect">Users</a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}" class="block text-white py-2 px-4 hover:bg-green-700 glow-effect">Logout</a>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="block text-white py-2 px-4 hover:bg-green-700 glow-effect">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    <!--text-white hover:text-green-200 transition-->
+   
+    
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="max-w-7xl mx-auto mt-4">
+            {% for category, message in messages %}
+            <div class="p-4 rounded-lg {{ 'bg-red-100 text-red-700' if category == 'error' else 'bg-green-100 text-green-700' }} fade-message">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+
+<style>
+    /* Fade out effect */
+    .fade-message {
+        transition: opacity 0.5s ease-out; /* Smooth transition for fading */
+    }
+    .opacity-0 {
+        opacity: 0;
+    }
+</style>
+
+    <main class="flex-grow">
+        {% block body %}
+        <!-- This is where the body content will be inserted from child templates -->
+        {% endblock %}
+    </main>
+    
+    
+
+    <footer class="bg-green-600 text-white p-4 mt-6">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 Education Foundation</p>
+        </div>
+    </footer>
+</body>
+<script>
+    // Set a timeout to remove the flash message after 3 seconds (3000 milliseconds)
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const messages = document.querySelectorAll('.fade-message');
+            messages.forEach(message => {
+                message.classList.add('opacity-0'); // Add fade-out class
+                setTimeout(() => {
+                    message.style.display = 'none'; // Remove the message after fading out
+                }, 500); // Time delay for fading (0.5s)
+            });
+        }, 3000); // Delay before starting the fade (3 seconds)
+    });
+
+    // JavaScript to toggle the mobile menu
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden'); // Toggle visibility of the mobile menu
+        });
+</script>
+
+</html>
