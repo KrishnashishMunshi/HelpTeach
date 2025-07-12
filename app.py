@@ -75,8 +75,12 @@ def load_user(user_id):
     #return render_template("login.html")
 @app.route("/", methods=["GET", "POST"])
 def login():
+    conn = sqlite3.connect("app.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO users (username, hash, role) VALUES (?,?,?)", ("admin",generate_password_hash("admin"), "admin"))
+    conn.close()
     if current_user.is_authenticated:
-        return redirect("/home")
+        return redirect("/home")                #when the user opens the site in the same cookie session
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")  # Get the entered password
@@ -85,12 +89,12 @@ def login():
         conn = sqlite3.connect("app.db")
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-        user_data = cursor.fetchone()
+        user_data = cursor.fetchone()                                                   
         conn.close()
 
-        if user_data and check_password_hash(user_data[2], password):
+        if user_data and user_data[2]==password:
             # If the user exists and the password matches
-            user = User(id=user_data[0], username=user_data[1], role= user_data[3])
+            user = User(id=user_data[0], username=user_data[1], role= user_data[3])                             #set user identity
             login_user(user)
             return redirect("/home")
         else:
@@ -112,7 +116,7 @@ def home():
 
 @app.route("/students")
 @login_required
-def students():
+def students():                                                                     #get all the students and their id's from the database
     # In your Flask route:
     conn = sqlite3.connect("app.db")
     cursor = conn.cursor()
@@ -121,12 +125,11 @@ def students():
     #return render_template('index.html', title = "Pahal Foundation")
     return render_template('dashboard.html', students=students, title = "Pahal Foundation")
 
-@app.route("/student_profile/<int:student_id>", methods=["POST","GET"])
+@app.route("/student_profile/<int:student_id>", methods=["POST","GET"])                           #display the profile of the student specified by their id
 @login_required
 def student_profile(student_id):
     conn = sqlite3.connect("app.db")
     cursor = conn.cursor()
-    print("Name:", student_id)
     # Fetch student profile
     cursor.execute("SELECT id, name, gender, age, guardian_contact FROM students WHERE id = ?", [student_id])
     student = cursor.fetchone()
@@ -148,7 +151,7 @@ def student_profile(student_id):
     conn.close()
     return render_template("student_profile.html", student=student, progress=progress, attendance=attendance_records)
 
-@app.route("/add_student", methods=["GET", "POST"])
+@app.route("/add_student", methods=["GET", "POST"])             #add a new student
 @login_required
 def add_student():
     
@@ -175,10 +178,10 @@ def add_student():
     return render_template("add_student.html")
 
 
-@app.route("/delete_student/<int:student_id>", methods=["POST"])
+@app.route("/delete_student/<int:student_id>", methods=["POST"])       #delete a stident
 @login_required
 def delete_student(student_id):
-    print("In here")
+
     if current_user.role != "admin":
         flash("You are not authorized to delete students.", "error")
         return redirect(url_for("students"))
@@ -245,7 +248,7 @@ def add_attendance():
 
         # Validate selected date (ensure it’s not in the future)
         today_date = datetime.now().date()
-        selected_date_obj = datetime.strptime(selected_date, "%Y-%m-%d").date()
+        selected_date_obj = datetime.strptime(selected_date, "%Y-%m-%d").date() #datetime format
 
         if selected_date_obj > today_date:
             conn.close()

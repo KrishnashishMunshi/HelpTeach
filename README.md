@@ -1,7 +1,9 @@
 # 📚 HelpTeach
-#### Video Demo:  <URL HERE>
+#### Video Demo: https://youtu.be/MOo3osDb9rs?si=NwRFB-VTRo_eztaF
 
 A web-based platform for managing student data, attendance, and performance, designed to support the educational efforts of underprivileged children. The system allows **admins** and **teachers** to efficiently track progress, monitor attendance, and manage users with role-based access control.
+
+<img width="1362" height="846" alt="Image" src="https://github.com/user-attachments/assets/72d47e7e-cd70-4e2e-9564-29ac952aec22" /> 
 
 ## 🚀 Features
 
@@ -14,17 +16,25 @@ A web-based platform for managing student data, attendance, and performance, des
 - Teachers can **view and update** student progress in various subjects.
 - Securely stored in the database for review.
 
+<img width="1675" height="885" alt="Image" src="https://github.com/user-attachments/assets/6392378a-75a9-4d1f-b312-8fb0f6219373" />
+
 ### ✅ Attendance Management
 - Teachers can **mark student attendance** daily.
 - Attendance records are stored and can be reviewed by **date**.
+
+<img width="1507" height="920" alt="Image" src="https://github.com/user-attachments/assets/57a7be03-506f-47ce-ad43-abc7e6727d4b" />
 
 ### 📅 Event Timeline
 - **Admins** can create, view, and delete events.
 - Events related to school activities are shown in a **timeline format**.
 
+<img width="1376" height="601" alt="Image" src="https://github.com/user-attachments/assets/f86428f4-cb67-46fe-8aa4-cded22905f13" />
+
 ### 👤 User Management
 - **Admins** can create and delete teacher accounts.
 - Role-based access: **Admins have full access, teachers have limited access**.
+
+<img width="1910" height="924" alt="Image" src="https://github.com/user-attachments/assets/b322d059-d11c-403c-b469-e303874e9c00" />
 
 ### 🔐 Authentication & Session Management
 - Users **stay logged in** even after closing the browser.
